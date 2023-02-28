@@ -79,35 +79,6 @@ function sellPlant(plant) {
     // Update the inventory displayed in the game
     let inventoryElement = document.getElementById("inventory");
     inventoryElement.innerHTML = inventory[plant] + "";
-}// get the sell price for the given plant
-function getPlantPrice(plant) {
-    return plantPrice[plant];
 }
 
-// sell plants to the marketplace
-function sellPlant(plant) {
-    let price = getPlantPrice(plant);
-
-    if (inventory[plant] < 1) {
-        alert("You don't have any " + plant + " to sell!");
-        return;
-    }
-
-    inventory[plant] -= 1;
-    gold += price;
-    document.getElementById("gold").innerHTML = gold;
-
-    // update the plant price displayed on the marketplace
-    let plantPriceElement = document.getElementById(`plantPrice${plant}`);
-    plantPrice[plant] *= 2;
-    plantPriceElement.innerHTML = plantPrice[plant];
-
-    // update the inventory displayed on the marketplace
-    let plantInventoryElement = document.getElementById(`${plant}Inventory`);
-    plantInventoryElement.innerHTML = inventory[plant] + "";
-
-    // update the inventory displayed in the game
-    let inventoryElement = document.getElementById("plant");
-    inventoryElement.innerHTML = inventory[plant] + "";
-}
 
