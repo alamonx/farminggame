@@ -340,5 +340,5 @@ function showInventory() {
   document.getElementById("inventory").style.display = "block";
 }
 
-
+    }
 
