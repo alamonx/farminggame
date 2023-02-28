@@ -1,6 +1,6 @@
 export { seeds, plants };
 
-let beetsSeed: 0,
+let beetSeed: 0,
     cabbageSeed: 0,
     carrotSeed: 0,
     cornSeed: 0,
