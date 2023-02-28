@@ -219,13 +219,13 @@ function updateInventory() {
 }
 
 function showMarketplace() {
-    document.getElementById("marketplace").style.display = "block";
-    document.getElementById("inventory").style.display = "none";
+    document.getElementById("marketplace-container").style.display = "block";
+    document.getElementById("inventory-container").style.display = "none";
 }
 
 function showInventory() {
-    document.getElementById("marketplace").style.display = "none";
-    document.getElementById("inventory").style.display = "block";
+    document.getElementById("marketplace-container").style.display = "none";
+    document.getElementById("inventory-container").style.display = "block";
 }
 
 function buyItem(item) {
