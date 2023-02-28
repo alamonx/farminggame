@@ -40,7 +40,22 @@ let plants = {
 };
 
 
-const SAVE_KEY = 'farming_idle_save_data';
+const STORAGE_KEY = "farming-game-storage";
+
+export function saveGame(gameData) {
+  const dataString = JSON.stringify(gameData);
+  localStorage.setItem(STORAGE_KEY, dataString);
+}
+
+export function loadGame() {
+  const dataString = localStorage.getItem(STORAGE_KEY);
+  if (dataString) {
+    return JSON.parse(dataString);
+  } else {
+    return null;
+  }
+}
+
 
 document.getElementById('beetsSeed').innerHTML = seeds.beetsSeed;
 document.getElementById('cabbageSeed').innerHTML = seeds.cabbageSeed;
