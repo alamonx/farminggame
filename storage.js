@@ -210,6 +210,7 @@ function loadInventory() {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', loadInventory);
 
 document.getElementById('beetsSeedButton').addEventListener('click', function () {
