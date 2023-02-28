@@ -28,9 +28,9 @@ button {
     margin-right: 10px;
 }
 
-    button:hover {
-        background-color: #3E8E41;
-    }
+button:hover {
+    background-color: #3E8E41;
+}
 
 #marketplace-button {
     font-size: 20px;
@@ -42,13 +42,14 @@ button {
     margin-bottom: 20px;
 }
 
-    #marketplace-button:hover {
-        background-color: #0D47A1;
-    }
+#marketplace-button:hover {
+    background-color: #0D47A1;
+}
 
 #seeds {
     margin-top: 20px;
 }
+
 .plot {
     display: inline-block;
     width: 350px;
@@ -62,4 +63,3 @@ button {
     line-height: 80px;
     margin: 10px;
 }
-
