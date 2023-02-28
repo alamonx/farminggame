@@ -1,3 +1,6 @@
+import { seeds } from './items.js';
+import { plants } from './storage.js';
+
 let gold = 0;
 let seed = 0;
 let growingSeed = 0; // 0 for no seed growing, 1-8 for seed being grown
