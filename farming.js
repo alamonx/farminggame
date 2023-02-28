@@ -1,136 +1,186 @@
-import { seeds } from './items.js';
-import { plants } from './storage.js';
-
+// Initialize variables
 let gold = 0;
-let seed = 0;
-let growingSeed = 0; // 0 for no seed growing, 1-8 for seed being grown
-let growTime = [0, 120, 300, 480, 600, 900, 900, 300, 180]; // grow time in seconds
-let seedCost = [0, 12, 50, 75, 350, 400, 5, 1]; // seed cost in gold
-let profit = [0, 3, 0.6, 0.6, 0.6, 0.6, 0.85, 0.6]; // profit multiplier
-let timeLeft = 0;
-let harvestAmount = [0, 1, 1, 1, 1, 1, 1, 10]; // amount of produce that can be harvested
+let plots = 9;
+let plants = [];
+let harvestAmount = [];
+let profit = [];
+let upgrade1Cost = 100;
+let upgrade2Cost = 500;
+let upgrade3Cost = 1000;
 
-let images = [
-    [], // empty
-    [], // beet
-    [], // cabbage
-    [], // carrot
-    [], // corn
-    [], // cucumber
-    [], // eggplant
-    [], // onion
-    []  // potato
-];
+// Initialize plants and harvest amounts
+for (let i = 0; i < plots; i++) {
+    plants[i] = 0;
+    harvestAmount[i] = 0;
+}
 
-let imageIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+// Initialize profits
+profit[0] = 1;
+profit[1] = 2;
+profit[2] = 5;
+profit[3] = 10;
 
-function buySeed(plant) {
-    let cost = seedCost[plant];
+// Check if there is saved game data
+if (localStorage.getItem("savedGame")) {
+    let saveData = JSON.parse(localStorage.getItem("savedGame"));
+    gold = saveData.gold;
+    plots = saveData.plots;
+    plants = saveData.plants;
+    harvestAmount = saveData.harvestAmount;
+    profit = saveData.profit;
+    upgrade1Cost = saveData.upgrade1Cost;
+    upgrade2Cost = saveData.upgrade2Cost;
+    upgrade3Cost = saveData.upgrade3Cost;
+}
 
-    if (gold < cost) {
+// Update the display
+updateDisplay();
+
+// Update the timer
+for (let i = 0; i < plots; i++) {
+    let timeLeft = getTimeLeft(i);
+    if (timeLeft > 0) {
+        setTimeout(updateTimer, 1000);
+    }
+}
+
+// Functions
+function updateDisplay() {
+    // Update gold
+    document.getElementById("gold").innerHTML = gold;
+
+    // Update plots
+    document.getElementById("plots").innerHTML = plots;
+
+    // Update plants
+    for (let i = 0; i < plots; i++) {
+        let plotDiv = document.getElementById("plot" + i);
+        if (plants[i] === 0) {
+            plotDiv.style.backgroundColor = "brown";
+            plotDiv.innerHTML = "Plot";
+        } else {
+            plotDiv.style.backgroundColor = "green";
+            plotDiv.innerHTML = "Growing";
+        }
+    }
+
+    // Update upgrade costs
+    document.getElementById("upgrade1Cost").innerHTML = upgrade1Cost;
+    document.getElementById("upgrade2Cost").innerHTML = upgrade2Cost;
+    document.getElementById("upgrade3Cost").innerHTML = upgrade3Cost;
+
+    // Update inventory
+    updateInventory();
+
+    // Update upgrade buttons
+    updateUpgradeButtons();
+}
+
+function updateTimer() {
+    for (let i = 0; i < plots; i++) {
+        let timeLeft = getTimeLeft(i);
+        let plotTimer = document.getElementById("timer" + i);
+        let harvestButton = document.getElementById("harvest" + i);
+        let plotDiv = document.getElementById("plot" + i);
+
+        if (timeLeft <= 0) {
+            harvestAmount[i] = getHarvestAmount(i);
+            plotTimer.style.display = "none";
+            harvestButton.style.display = "block";
+            plotDiv.style.backgroundColor = "green";
+            plotDiv.innerHTML = "Harvest";
+        } else {
+            plotTimer.innerHTML = timeLeft + "s";
+        }
+    }
+
+    setTimeout(updateTimer, 1000);
+}
+
+function getTimeLeft(plot) {
+    let timeLeft = 0;
+    let now = new Date().getTime();
+    let endTime = localStorage.getItem("plot" + plot);
+
+    if (endTime !== null) {
+        timeLeft = Math.floor((parseInt(endTime) - now) / 1000);
+        if (timeLeft <= 0) {
+            localStorage.removeItem("plot" + plot);
+        }
+    }
+
+    return timeLeft;
+}
+function getHarvestAmount(plot) {
+    let plant = plants[plot];
+    let amount = 0;
+
+    if (plant !== 0) {
+        amount = Math.floor(Math.random() * 4) + 1;
+    }
+
+    return amount;
+}
+
+function plantSeed(plot, seed) {
+    if (plants[plot] !== 0) {
+        alert("This plot is already being used!");
+        return;
+    }
+
+    if (seed === 0) {
+        alert("You need to select a seed first!");
+        return;
+    }
+
+    if (gold < seed) {
         alert("You don't have enough gold to buy this seed!");
         return;
     }
 
-    gold -= cost;
+    gold -= seed;
     document.getElementById("gold").innerHTML = gold;
-    seed++;
 
-    document.getElementById("seed").innerHTML = seed;
-}
+    plants[plot] = seed;
+    localStorage.setItem("plants", JSON.stringify(plants));
 
-function plantSeed(plot) {
-    if (growingSeed !== 0) {
-        return;
-    }
+    let time = new Date().getTime() + 30000;
+    localStorage.setItem("plot" + plot, time);
 
-    if (seed <= 0) {
-        alert("You don't have any seeds!");
-        return;
-    }
-
-    seed--;
-    document.getElementById("seed").innerHTML = seed;
-
-    growingSeed = plot;
-    timeLeft = growTime[growingSeed];
-    let plotTimer = document.getElementById("plotTimer" + growingSeed);
-    let harvestButton = document.getElementById("harvestButton" + growingSeed);
-    let plotDiv = document.getElementById("plot" + growingSeed);
-    plotTimer.innerHTML = timeLeft + "s";
+    let plotTimer = document.getElementById("timer" + plot);
     plotTimer.style.display = "block";
-    harvestButton.style.display = "none";
-    plotDiv.style.backgroundColor = "brown";
-    plotDiv.innerHTML = "Plot";
 
-    updateTimer();
+    setTimeout(updateTimer, 1000);
+
+    updateDisplay();
 }
 
-function updateTimer() {
-    if (growingSeed === 0) {
-        return;
-    }
-
-    let plotTimer = document.getElementById("plotTimer" + growingSeed);
-    let harvestButton = document.getElementById("harvestButton" + growingSeed);
-    let plotDiv = document.getElementById("plot" + growingSeed);
-
-    timeLeft--;
-
-    if (timeLeft <= 0) {
-        switch (growingSeed) {
-            case 1:
-                harvest(1);
-                break;
-            case 2:
-                harvest(2);
-                break;
-            case 3:
-                harvest(3);
-                break;
-            case 4:
-                harvest(4);
-                break;
-            case 5:
-                harvest(5);
-                break;
-            case 6:
-                harvest(6);
-                break;
-            case 7:
-                harvest(7);
-                break;
-            case 8:
-                harvest(8);
-                break;
-        }
-
-        growingSeed = 0;
-        plotTimer.style.display
-
-function buyUpgrade(upgrade) {
+function upgrade(upgrade) {
     let upgradeCost = 0;
-    let upgradeName = "";
-    let upgradeDesc = "";
-    let upgradeButton = "";
+    let upgradeText = "";
+
     switch (upgrade) {
         case 1:
-            upgradeCost = 100;
-            upgradeName = "Better Seeds";
-            upgradeDesc = "Seeds now yield 50% more produce.";
-            upgradeButton = "buyUpgrade(1)";
+            upgradeCost = upgrade1Cost;
+            upgradeText = "You have upgraded your watering can!";
+            upgrade1Cost *= 2;
             break;
         case 2:
-            upgradeCost = 500;
-            upgradeName = "Fertilizer";
-            upgradeDesc = "Crops now grow 25% faster.";
-            upgradeButton = "buyUpgrade(2)";
+            upgradeCost = upgrade2Cost;
+            upgradeText = "You have upgraded your hoe!";
+            upgrade2Cost *= 2;
             break;
         case 3:
-            upgradeCost = 1000;
-            upgradeName = "Irrigation";
-            upgradeDesc = "Crops no longer need to be watered.";
-            upgradeButton = "buyUpgrade(3)";
+            upgradeCost = upgrade3Cost;
+            upgradeText = "You have upgraded your farm!";
+            upgrade3Cost *= 2;
+            plots += 3;
+            plants.length = plots;
+            harvestAmount.length = plots;
+            for (let i = plots - 3; i < plots; i++) {
+                plants[i] = 0;
+                harvestAmount[i] = 0;
+            }
             break;
     }
 
@@ -142,392 +192,143 @@ function buyUpgrade(upgrade) {
     gold -= upgradeCost;
     document.getElementById("gold").innerHTML = gold;
 
-    switch (upgrade) {
-        case 1:
-            profit[1] = 4.5;
-            profit[2] = 0.9;
-            profit[3] = 0.9;
-            profit[4] = 0.9;
-            profit[5] = 0.9;
-            profit[6] = 1.275;
-            profit[7] = 0.9;
-            profit[8] = 0.9;
-            document.getElementById("seedCost1").innerHTML = seedCost[1] * 2;
-            document.getElementById("seedCost2").innerHTML = seedCost[2] * 2;
-            document.getElementById("seedCost3").innerHTML = seedCost[3] * 2;
-            document.getElementById("seedCost4").innerHTML = seedCost[4] * 2;
-            document.getElementById("seedCost5").innerHTML = seedCost[5] * 2;
-            document.getElementById("seedCost6").innerHTML = seedCost[6] * 2;
-            document.getElementById("seedCost7").innerHTML = seedCost[7] * 2;
-            document.getElementById("seedCost8").innerHTML = seedCost[8] * 2;
-            document.getElementById("upgrade1").style.display = "none";
-            break;
-        case 2:
-            for (let i = 1; i <= 8; i++) {
-                growTime[i] = Math.round(growTime[i] * 0.75);
-            }
-            document.getElementById("upgrade2").style.display = "none";
-            break;
-        case 3:
-            for (let i = 1; i <= 8; i++) {
-                let plotDiv = document.getElementById("plot" + i);
-                plotDiv.style.backgroundColor = "green";
-            }
-            document.getElementById("upgrade3").style.display = "none";
-            for (let i = 1; i <= 8; i++) {
-                let plotTimer = document.getElementById("plotTimer" + i);
-                let harvestButton = document.getElementById("harvestButton" + i);
-                let plotDiv = document.getElementById("plot" + i);
-
-                if (plotTimer.style.display !== "none") {
-                    plotTimer.style.display = "none";
-                    harvestButton.style.display = "block";
-                    plotDiv.style.backgroundColor = "green";
-                    plotDiv.innerHTML = "Harvest";
-                }
-            }
-            break;
-    }
-
-    function updateUpgradeButtons() {
-let upgradeButton1 = document.getElementById("upgrade1");
-let upgradeButton2 = document.getElementById("upgrade2");
-let upgradeButton3 = document.getElementById("upgrade3");
-        if (gold >= 100 && upgradeButton1.style.display === "none") {
-    upgradeButton1.style.display = "block";
-}
-
-if (gold >= 500 && upgradeButton2.style.display === "none") {
-    upgradeButton2.style.display = "block";
-}
-
-if (gold >= 1000 && upgradeButton3.style.display === "none") {
-    upgradeButton3.style.display = "block";
-}
-        }
-
-function showMarketplace() {
-document.getElementById("marketplace").style.display = "block";
-document.getElementById("inventory").style.display = "none";
-}
-
-function showInventory() {
-document.getElementById("marketplace").style.display = "none";
-document.getElementById("inventory").style.display = "block";
-}
-
-function buyItem(item) {
-let itemCost = 0;
-let itemName = "";
-let itemDesc = "";
-let itemButton = "";
-switch (item) {
-case 1:
-itemCost = 10;
-itemName = "Watering Can";
-itemDesc = "This item allows you to water your plants to speed up growth.";
-itemButton = "useItem(1)";
-break;
-case 2:
-itemCost = 50;
-itemName = "Hoe";
-itemDesc = "This item allows you to till unused plots for planting.";
-itemButton = "useItem(2)";
-break;
-}
-if (gold < itemCost) {
-    alert("You don't have enough gold to buy this item!");
-    return;
-}
-
-gold -= itemCost;
-document.getElementById("gold").innerHTML = gold;
-
-let newItem = {name: itemName, description: itemDesc, button: itemButton};
-let inventory = JSON.parse(localStorage.getItem("inventory"));
-
-if (inventory === null) {
-    inventory = [];
-}
-
-inventory.push(newItem);
-localStorage.setItem("inventory", JSON.stringify(inventory));
-
-updateInventory();
-}
-
-function useItem(item) {
-let inventory = JSON.parse(localStorage.getItem("inventory"));
-let itemName = "";
-switch (item) {
-case 1:
-itemName = "Watering Can";
-break;
-case 2:
-itemName = "Hoe";
-break;
-}
-for (let i = 0; i < inventory.length; i++) {
-    if (inventory[i].name === itemName) {
-        inventory.splice(i, 1);
-        localStorage.setItem("inventory", JSON.stringify(inventory));
-        break;
-    }
-}
-
-updateInventory();
-            growingSeed = 0;
-        plotTimer.style.display = "none";
-        harvestButton.style.display = "block";
-        plotDiv.style.backgroundColor = "green";
-        plotDiv.innerHTML = "Harvest";
-    } else {
-        plotTimer.innerHTML = timeLeft + "s";
-    }
-
-    setTimeout(updateTimer, 1000);
-}
-
-function harvest(plot) {
-    let amount = harvestAmount[plot];
-    let plant = plants[plot];
-
-    plants[plot] = 0;
-    let plotDiv = document.getElementById("plot" + plot);
-    plotDiv.style.backgroundColor = "brown";
-    plotDiv.innerHTML = "Plot";
-
-    let profitAmount = amount * plant * profit[plant];
-    gold += profitAmount;
-    document.getElementById("gold").innerHTML = gold;
-
-    let message = "You harvested " + amount + " " + plants[plant] + " for " + profitAmount + " gold.";
-    alert(message);
-}
-
-function updateUpgradeButtons() {
-    let upgradeButton1 = document.getElementById("upgrade1");
-    let upgradeButton2 = document.getElementById("upgrade2");
-    let upgradeButton3 = document.getElementById("upgrade3");
-
-    if (gold >= 100 && upgradeButton1.style.display === "none") {
-        upgradeButton1.style.display = "block";
-    }
-
-    if (gold >= 500 && upgradeButton2.style.display === "none") {
-        upgradeButton2.style.display = "block";
-    }
-
-    if (gold >= 1000 && upgradeButton3.style.display === "none") {
-        upgradeButton3.style.display = "block";
-    }
-}
-
-function showMarketplace() {
-    document.getElementById("marketplace").style.display = "block";
-    document.getElementById("inventory").style.display = "none";
-}
-
-function showInventory() {
-    document.getElementById("marketplace").style.display = "none";
-    document.getElementById("inventory").style.display = "block";
-}
-
-function buyItem(item) {
-    let itemCost = 0;
-    let itemName = "";
-    let itemDesc = "";
-    let itemButton = "";
-
-    switch (item) {
-        case 1:
-            itemCost = 10;
-            itemName = "Watering Can";
-            itemDesc = "This item allows you to water your plants to speed up growth.";
-            itemButton = "useItem(1)";
-            break;
-        case 2:
-            itemCost = 50;
-            itemName = "Hoe";
-            itemDesc = "This item allows you to till unused plots for planting.";
-            itemButton = "useItem(2)";
-            break;
-    }
-
-    if (gold < itemCost) {
-        alert("You don't have enough gold to buy this item!");
-        return;
-    }
-
-    gold -= itemCost;
-    document.getElementById("gold").innerHTML = gold;
-
-    let newItem = { name: itemName, description: itemDesc, button: itemButton };
-    let inventory = JSON.parse(localStorage.getItem("inventory"));
-
-    if (inventory === null) {
-        inventory = [];
-    }
-
-    inventory.push(newItem);
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-
-    updateInventory();
-}
-
-function useItem(item) {
-    let inventory = JSON.parse(localStorage.getItem("inventory"));
-    let itemName = "";
-
-    switch (item) {
-        case 1:
-            itemName = "Watering Can";
-            break;
-        case 2:
-            itemName = "Hoe";
-            break;
-    }
-
-    for (let i = 0; i < inventory.length; i++) {
-        if (inventory[i].name === itemName) {
-            inventory.splice(i, 1);
-            localStorage.setItem("inventory", JSON.stringify(inventory));
-            break;
-        }
-    }
-
-    updateInventory();
-}
-
-            
-           function updateUpgradeButtons() {
-    let upgradeButton1 = document.getElementById("upgrade1");
-    let upgradeButton2 = document.getElementById("upgrade2");
-    let upgradeButton3 = document.getElementById("upgrade3");
-
-    if (gold >= 100 && upgradeButton1.style.display === "none") {
-        upgradeButton1.style.display = "block";
-    }
-
-    if (gold >= 500 && upgradeButton2.style.display === "none") {
-        upgradeButton2.style.display = "block";
-    }
-
-    if (gold >= 1000 && upgradeButton3.style.display === "none") {
-        upgradeButton3.style.display = "block";
-    }
-}
-
-function showMarketplace() {
-    document.getElementById("marketplace").style.display = "block";
-    document.getElementById("inventory").style.display = "none";
-}
-
-function showInventory() {
-    document.getElementById("marketplace").style.display = "none";
-    document.getElementById("inventory").style.display = "block";
-}
-
-function buyItem(item) {
-    let itemCost = 0;
-    let itemName = "";
-    let itemDesc = "";
-    let itemButton = "";
-
-    switch (item) {
-        case 1:
-            itemCost = 10;
-            itemName = "Watering Can";
-            itemDesc = "This item allows you to water your plants to speed up growth.";
-            itemButton = "useItem(1)";
-            break;
-        case 2:
-            itemCost = 50;
-            itemName = "Hoe";
-            itemDesc = "This item allows you to till unused plots for planting.";
-            itemButton = "useItem(2)";
-            break;
-    }
-
-    if (gold < itemCost) {
-        alert("You don't have enough gold to buy this item!");
-        return;
-    }
-
-    gold -= itemCost;
-    document.getElementById("gold").innerHTML = gold;
-
-    let newItem = { name: itemName, description: itemDesc, button: itemButton };
-    let inventory = JSON.parse(localStorage.getItem("inventory"));
-
-    if (inventory === null) {
-        inventory = [];
-    }
-
-    inventory.push(newItem);
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-
-    updateInventory();
-}
-
-function useItem(item) {
-    let inventory = JSON.parse(localStorage.getItem("inventory"));
-    let itemName = "";
-
-    switch (item) {
-        case 1:
-            itemName = "Watering Can";
-            break;
-        case 2:
-            itemName = "Hoe";
-            break;
-    }
-
-    for (let i = 0; i < inventory.length; i++) {
-        if (inventory[i].name === itemName) {
-            inventory.splice(i, 1);
-            localStorage.setItem("inventory", JSON.stringify(inventory));
-            break;
-        }
-    }
-
-    updateInventory();
+    alert(upgradeText);
+    updateDisplay();
 }
 
 function updateInventory() {
     let inventory = JSON.parse(localStorage.getItem("inventory"));
-    let inventoryDiv = document.getElementById("inventoryItems");
-
-    inventoryDiv.innerHTML = "";
+    let inventoryList = document.getElementById("inventoryList");
+    inventoryList.innerHTML = "";
 
     if (inventory === null || inventory.length === 0) {
-        inventoryDiv.innerHTML = "Your inventory is empty.";
+        inventoryList.innerHTML = "<li>You don't have any items in your inventory!</li>";
         return;
     }
 
     for (let i = 0; i < inventory.length; i++) {
-        let item = document.createElement("div");
-        let itemName = document.createElement("h3");
-        let itemDesc = document.createElement("p");
-        let itemButton = document.createElement("button");
-
-        itemName.innerHTML = inventory[i].name;
-        itemDesc.innerHTML = inventory[i].description;
-        itemButton.setAttribute("onclick", inventory[i].button);
-        itemButton.innerHTML = "Use";
-
-        item.appendChild(itemName);
-        item.appendChild(itemDesc);
-        item.appendChild(itemButton);
-
-        inventoryDiv.appendChild(item);
+        let item = inventory[i];
+        let li = document.createElement("li");
+        let button = document.createElement("button");
+        button.setAttribute("onclick", item.button);
+        button.innerHTML = "Use";
+        li.innerHTML = "<b>" + item.name + "</b> - " + item.description + " ";
+        li.appendChild(button);
+        inventoryList.appendChild(li);
     }
 }
 
-updateUpgradeButtons();
-update
+function showMarketplace() {
+    document.getElementById("marketplace").style.display = "block";
+    document.getElementById("inventory").style.display = "none";
+}
 
-           
+function showInventory() {
+    document.getElementById("marketplace").style.display = "none";
+    document.getElementById("inventory").style.display = "block";
+}
 
+function buyItem(item) {
+    let itemCost = 0;
+    let itemName = "";
+    let itemDesc = "";
+    let itemButton = "";
+
+    switch (item) {
+        case 1:
+            itemCost = 
+                function updateUpgradeButtons() {
+    let upgradeButton1 = document.getElementById("upgrade1");
+    let upgradeButton2 = document.getElementById("upgrade2");
+    let upgradeButton3 = document.getElementById("upgrade3");
+
+    if (gold >= 100 && upgradeButton1.style.display === "none") {
+        upgradeButton1.style.display = "block";
+    }
+
+    if (gold >= 500 && upgradeButton2.style.display === "none") {
+        upgradeButton2.style.display = "block";
+    }
+
+    if (gold >= 1000 && upgradeButton3.style.display === "none") {
+        upgradeButton3.style.display = "block";
+    }
+}
+
+function showMarketplace() {
+    document.getElementById("marketplace").style.display = "block";
+    document.getElementById("inventory").style.display = "none";
+}
+
+function showInventory() {
+    document.getElementById("marketplace").style.display = "none";
+    document.getElementById("inventory").style.display = "block";
+}
+
+function buyItem(item) {
+    let itemCost = 0;
+    let itemName = "";
+    let itemDesc = "";
+    let itemButton = "";
+
+    switch (item) {
+        case 1:
+            itemCost = 10;
+            itemName = "Watering Can";
+            itemDesc = "This item allows you to water your plants to speed up growth.";
+            itemButton = "useItem(1)";
+            break;
+        case 2:
+            itemCost = 50;
+            itemName = "Hoe";
+            itemDesc = "This item allows you to till unused plots for planting.";
+            itemButton = "useItem(2)";
+            break;
+    }
+
+    if (gold < itemCost) {
+        alert("You don't have enough gold to buy this item!");
+        return;
+    }
+
+    gold -= itemCost;
+    document.getElementById("gold").innerHTML = gold;
+
+    let newItem = { name: itemName, description: itemDesc, button: itemButton };
+    let inventory = JSON.parse(localStorage.getItem("inventory"));
+
+    if (inventory === null) {
+        inventory = [];
+    }
+
+    inventory.push(newItem);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+
+    updateInventory();
+}
+
+function useItem(item) {
+    let inventory = JSON.parse(localStorage.getItem("inventory"));
+    let itemName = "";
+
+    switch (item) {
+        case 1:
+            itemName = "Watering Can";
+            break;
+        case 2:
+            itemName = "Hoe";
+            break;
+    }
+
+    for (let i = 0; i < inventory.length; i++) {
+        if (inventory[i].name === itemName) {
+            inventory.splice(i, 1);
+            localStorage.setItem("inventory", JSON.stringify(inventory));
+            break;
+        }
+    }
+
+    updateInventory();
+}
 
 
