@@ -255,57 +255,7 @@ function buyItem(item) {
     }
 }
 
-function showMarketplace() {
-    document.getElementById("marketplace").style.display = "block";
-    document.getElementById("inventory").style.display = "none";
-}
 
-function showInventory() {
-    document.getElementById("marketplace").style.display = "none";
-    document.getElementById("inventory").style.display = "block";
-}
-
-function buyItem(item) {
-    let itemCost = 0;
-    let itemName = "";
-    let itemDesc = "";
-    let itemButton = "";
-
-    switch (item) {
-        case 1:
-            itemCost = 10;
-            itemName = "Watering Can";
-            itemDesc = "This item allows you to water your plants to speed up growth.";
-            itemButton = "useItem(1)";
-            break;
-        case 2:
-            itemCost = 50;
-            itemName = "Hoe";
-            itemDesc = "This item allows you to till unused plots for planting.";
-            itemButton = "useItem(2)";
-            break;
-    }
-
-    if (gold < itemCost) {
-        alert("You don't have enough gold to buy this item!");
-        return;
-    }
-
-    gold -= itemCost;
-    document.getElementById("gold").innerHTML = gold;
-
-    let newItem = { name: itemName, description: itemDesc, button: itemButton };
-    let inventory = JSON.parse(localStorage.getItem("inventory"));
-
-    if (inventory === null) {
-        inventory = [];
-    }
-
-    inventory.push(newItem);
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-
-    updateInventory();
-}
 
 function useItem(item) {
     let inventory = JSON.parse(localStorage.getItem("inventory"));
