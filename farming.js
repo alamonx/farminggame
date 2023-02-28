@@ -330,15 +330,4 @@ function useItem(item) {
 
     updateInventory();
 }
-            function showMarketplace() {
-  document.getElementById("marketplace").style.display = "block";
-  document.getElementById("inventory").style.display = "none";
-}
-
-function showInventory() {
-  document.getElementById("marketplace").style.display = "none";
-  document.getElementById("inventory").style.display = "block";
-}
-
-    }
 
