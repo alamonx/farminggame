@@ -1,5 +1,5 @@
+export { seeds, plants };
 import { seeds, plants } from './inventory.js';
-
 const SAVE_KEY = 'farming_idle_save_data';
 
 document.getElementById('beetsSeed').innerHTML = seeds.beetsSeed;
