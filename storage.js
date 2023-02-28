@@ -1,5 +1,45 @@
 export { seeds, plants };
-import { seeds, plants } from './inventory.js';
+
+let beetsSeed: 0,
+    cabbageSeed: 0,
+    carrotSeed: 0,
+    cornSeed: 0,
+    cucumberSeed: 0,
+    eggplantSeed: 0,
+    onionSeed: 0,
+    peasSeed: 0,
+    pepperSeed: 0,
+    potatoSeed: 0,
+    pumpkinSeed: 0,
+    radishSeed: 0,
+    saladSeed: 0,
+    spinachSeed: 0,
+    tomatoSeed: 0,
+    watermelonSeed: 0,
+    wheatSeed: 0
+};
+
+let plants = {
+    beets: 0,
+    cabbage: 0,
+    carrot: 0,
+    corn: 0,
+    cucumber: 0,
+    eggplant: 0,
+    onion: 0,
+    peas: 0,
+    pepper: 0,
+    potato: 0,
+    pumpkin: 0,
+    radish: 0,
+    salad: 0,
+    spinach: 0,
+    tomato: 0,
+    watermelon: 0,
+    wheat: 0
+};
+
+
 const SAVE_KEY = 'farming_idle_save_data';
 
 document.getElementById('beetsSeed').innerHTML = seeds.beetsSeed;
