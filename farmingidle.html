@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farming Game</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Farming Game</h1>
+        <p>Gold: <span id="gold">0</span></p>
+        <button onclick="showMarketplace()">Marketplace</button>
+        <button onclick="showInventory()">Inventory</button>
+        <!-- Add your game UI elements here -->
+    </div>
+
+    <div id="plots">
+        <div id="plot1" class="plot" onclick="plantSeed(1)">
+            <span id="plotText1">Plot</span>
+            <button id="harvestButton1" class="harvestButton" style="display: none;" onclick="harvest(1)">Harvest</button>
+            <div id="plotTimer1" class="plotTimer"></div>
+        </div>
+        <div id="plot2" class="plot" onclick="plantSeed(2)">
+            <span id="plotText2">Plot</span>
+            <button id="harvestButton2" class="harvestButton" style="display: none;" onclick="harvest(2)">Harvest</button>
+            <div id="plotTimer2" class="plotTimer"></div>
+        </div>
+        <div id="plot3" class="plot" onclick="plantSeed(3)">
+            <span id="plotText3">Plot</span>
+            <button id="harvestButton3" class="harvestButton" style="display: none;" onclick="harvest(3)">Harvest</button>
+            <div id="plotTimer3" class="plotTimer"></div>
+        </div>
+        <div id="plot4" class="plot" onclick="plantSeed(4)">
+            <span id="plotText4">Plot</span>
+            <button id="harvestButton4" class="harvestButton" style="display: none;" onclick="harvest(4)">Harvest</button>
+            <div id="plotTimer4" class="plotTimer"></div>
+        </div>
+        <div id="plot5" class="plot" onclick="plantSeed(5)">
+            <span id="plotText5">Plot</span>
+            <button id="harvestButton5" class="harvestButton" style="display: none;" onclick="harvest(5)">Harvest</button>
+            <div id="plotTimer5" class="plotTimer"></div>
+        </div>
+        <div id="plot6" class="plot" onclick="plantSeed(6)">
+            <span id="plotText6">Plot</span>
+            <button id="harvestButton6" class="harvestButton" style="display: none;" onclick="harvest(6)">Harvest</button>
+            <div id="plotTimer6" class="plotTimer"></div>
+        </div>
+        <div id="plot7" class="plot" onclick="plantSeed(7)">
+            <span id="plotText7">Plot</span>
+            <button id="harvestButton7" class="harvestButton" style="display: none;" onclick="harvest(7)">Harvest</button>
+            <div id="plotTimer7" class="plotTimer"></div>
+        </div>
+        <div id="plot8" class="plot" onclick="plantSeed(8)">
+            <span id="plotText8">Plot</span>
+            <button id="harvestButton8" class="harvestButton" onclick="harvestPlant(8)">Harvest</button>
+            <div id="plotTimer8" class="plotTimer"></div>
+        </div>
+    </div>
+
+    <div id="marketplace-container" style="display:none;">
+        <h2>Marketplace</h2>
+        <p>Gold: <span id="marketGold">0</span></p>
+        <div class="marketItem">
+            <h3>Beet Seeds</h3>
+            <p>Cost: <span id="seedCost1">12</span> gold</p>
+            <button onclick="buySeed(1)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Cabbage Seeds</h3>
+            <p>Cost: <span id="seedCost2">50</span> gold</p>
+            <button onclick="buySeed(2)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Carrot Seeds</h3>
+            <p>Cost: <span id="seedCost3">75</span> gold</p>
+            <button onclick="buySeed(3)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Corn Seeds</h3>
+            <p>Cost: <span id="seedCost4">350</span> gold</p>
+            <button onclick="buySeed(4)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Cucumber Seeds</h3>
+            <p>Cost: <span id="seedCost5">400</span> gold</p>
+            <button onclick="buySeed(5)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Eggplant Seeds</h3>
+            <p>Cost: <span id="seedCost6">5</span> gold</p>
+            <button onclick="buySeed(6)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Onion Seeds</h3>
+            <p>Cost: <span id="seedCost7">1</span> gold</p>
+            <button onclick="buySeed(7)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Potato Seeds</h3>
+            <p>Cost: <span id="seedCost8">1</span> gold</p>
+            <button onclick="buySeed(8)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Better Seeds</h3>
+            <p>Cost: 100 gold</p>
+            <p>Seeds now yield 50% more produce.</p>
+            <button id="upgrade1" onclick="buyUpgrade(1)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Fertilizer</h3>
+            <p>Cost: 500 gold</p>
+            <p>Crops now grow 25% faster.</p>
+            <button id="upgrade2" onclick="buyUpgrade(2)">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Irrigation</h3>
+            <p>Cost: 1000 gold</p>
+            <p>Crops no longer need to be watered.</p>
+            <button onclick="buyIrrigation()">Buy</button>
+        </div>
+        <div class="marketItem">
+            <h3>Fertilizer</h3>
+            <p>Cost: 500 gold</p>
+            <p>Crops grow twice as fast.</p>
+            <button onclick="buyFertilizer()">Buy</button>
+        </div>
+
+        <div class="marketItem">
+            <h3>Sprinkler</h3>
+            <p>Cost: 2000 gold</p>
+            <p>Crops no longer need to be watered and grow twice as fast.</p>
+            <button onclick="buySprinkler()">Buy</button>
+        </div>
+    </div>
+    <!-- Inventory UI elements -->
+    <div id="inventory-container">
+        <h2>Inventory</h2>
+        <button onclick="hideInventory()">Close</button>
+        <p>Gold: <span id="inventory-gold">0</span></p>
+        <h3>Seeds</h3>
+        <div id="seed-inventory"></div>
+        <h3>Items</h3>
+        <div id="item-inventory"></div>
+    </div>
+    <script src="inventory.js" type="module"></script>
+    <script src="farming.js"></script>
+</body>
+</html>
