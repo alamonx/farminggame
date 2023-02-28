@@ -236,12 +236,13 @@ function buyItem(item) {
 
     switch (item) {
         case 1:
-            itemCost = 
+            itemCost =
                 function updateUpgradeButtons() {
-    let upgradeButton1 = document.getElementById("upgrade1");
-    let upgradeButton2 = document.getElementById("upgrade2");
-    let upgradeButton3 = document.getElementById("upgrade3");
-
+                    let upgradeButton1 = document.getElementById("upgrade1");
+                    let upgradeButton2 = document.getElementById("upgrade2");
+                    let upgradeButton3 = document.getElementById("upgrade3");
+                }
+    }
     if (gold >= 100 && upgradeButton1.style.display === "none") {
         upgradeButton1.style.display = "block";
     }
