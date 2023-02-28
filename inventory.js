@@ -1,6 +1,6 @@
-export { seeds, plants };
-
 import { seeds, plants } from './storage.js';
+
+export { seeds, plants };
 
 
 
