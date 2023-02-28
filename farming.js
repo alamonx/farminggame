@@ -50,7 +50,7 @@ function updateDisplay() {
     document.getElementById("gold").innerHTML = gold;
 
     // Update plots
-    document.getElementById("plots").innerHTML = plots;
+    // document.getElementById("plots").innerHTML = plots;
 
     // Update plants
     for (let i = 0; i < plots; i++) {
