@@ -424,3 +424,6 @@ document.getElementById('wheatHarvestButton').addEventListener('click', function
         addToInventory('wheatSeed', 2);
     }
 });
+export { seeds, plants };
+export { saveInventory, addToInventory };
+
