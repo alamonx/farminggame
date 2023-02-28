@@ -72,13 +72,11 @@ function sellPlant(plant) {
     gold += price;
     document.getElementById("gold").innerHTML = gold;
 
-    // Update the inventory displayed on the marketplace
+    // Update the plant inventory displayed on the marketplace
     let plantInventoryElement = document.getElementById(`${plant}Inventory`);
     plantInventoryElement.innerHTML = inventory[plant] + "";
 
-    // Update the inventory displayed in the game
+    // Update the inventory displayed on the marketplace
     let inventoryElement = document.getElementById("inventory");
     inventoryElement.innerHTML = inventory[plant] + "";
 }
-
-
