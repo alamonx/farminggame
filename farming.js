@@ -218,15 +218,11 @@ function updateInventory() {
     }
 }
 
-function showMarketplace() {
-    document.getElementById("marketplace-container").style.display = "block";
+function showui(market) {
+    document.getElementById("marketplace-container").style.display = market ? "block" : "none";
     document.getElementById("inventory-container").style.display = "none";
 }
 
-function showInventory() {
-    document.getElementById("marketplace-container").style.display = "none";
-    document.getElementById("inventory-container").style.display = "block";
-}
 
 function buyItem(item) {
     let itemCost = 0;

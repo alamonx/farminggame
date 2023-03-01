@@ -1,39 +1,78 @@
-export const seeds = {
-    beetsSeed: 0,
-    cabbageSeed: 0,
-    carrotSeed: 0,
-    cornSeed: 0,
-    cucumberSeed: 0,
-    eggplantSeed: 0,
-    onionSeed: 0,
-    peasSeed: 0,
-    pepperSeed: 0,
-    potatoSeed: 0,
-    pumpkinSeed: 0,
-    radishSeed: 0,
-    saladSeed: 0,
-    spinachSeed: 0,
-    tomatoSeed: 0,
-    watermelonSeed: 0,
-    wheatSeed: 0,
-};
+class item {
 
-export const plants = {
-    beets: 0,
-    cabbage: 0,
-    carrot: 0,
-    corn: 0,
-    cucumber: 0,
-    eggplant: 0,
-    onion: 0,
-    peas: 0,
-    pepper: 0,
-    potato: 0,
-    pumpkin: 0,
-    radish: 0,
-    salad: 0,
-    spinach: 0,
-    tomato: 0,
-    watermelon: 0,
-    wheat: 0,
-};
+    constructor(name, quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
+
+    show() {
+        return this.name + " : " + this.quantity;
+    }
+}
+
+
+class tool {
+
+    constructor(item, durability) {
+        this.item = item;
+        this.durability = durability;
+    }
+
+}
+
+let plants = [];
+let seeds = [];
+let tools = [];
+
+plants.push(new item("beets", 0));
+plants.push(new item("cabbage", 0));
+plants.push(new item("carrot", 0));
+plants.push(new item("corn", 0));
+plants.push(new item("cucumber", 0));
+plants.push(new item("eggplant", 0));
+plants.push(new item("onion", 0));
+plants.push(new item("peas", 0));
+plants.push(new item("pepper", 0));
+plants.push(new item("potato", 0));
+plants.push(new item("pumpkin", 0));
+plants.push(new item("radish", 0));
+plants.push(new item("salad", 0));
+plants.push(new item("spinach", 0));
+plants.push(new item("tomato", 0));
+plants.push(new item("watermelon", 0));
+plants.push(new item("wheat", 0));
+
+seeds.push(new item("beets", 0));
+seeds.push(new item("cabbage", 0));
+seeds.push(new item("carrot", 15));
+seeds.push(new item("corn", 0));
+seeds.push(new item("cucumber", 0));
+seeds.push(new item("eggplant", 0));
+seeds.push(new item("onion", 0));
+seeds.push(new item("peas", 0));
+seeds.push(new item("pepper", 0));
+seeds.push(new item("potato", 0));
+seeds.push(new item("pumpkin", 0));
+seeds.push(new item("radish", 0));
+seeds.push(new item("salad", 0));
+seeds.push(new item("spinach", 0));
+seeds.push(new item("tomato", 0));
+seeds.push(new item("watermelon", 0));
+seeds.push(new item("wheat", 0));
+
+tools.push(new tool(new item("hache", 0), 78));
+
+console.log("dura:", tools[0].durability);
+console.log("object:", tools[0].item.show());
+
+for (let i = 0; i < plants.length; i++) {
+    console.log(plants[i].show());
+}
+
+for (let i = 0; i < seeds.length; i++) {
+    console.log(seeds[i].show());
+}
+
+// object = class
+// attribute => variable
+// method => function
